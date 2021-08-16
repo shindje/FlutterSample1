@@ -1,4 +1,7 @@
+import 'package:app/components.dart';
 import 'package:flutter/material.dart';
+import 'package:tcard/tcard.dart';
+import 'game.dart';
 
 void main() {
   runApp(MyApp());
@@ -45,8 +48,15 @@ class MyHomePage extends StatefulWidget {
   _MyHomePageState createState() => _MyHomePageState();
 }
 
-class _MyHomePageState extends State<MyHomePage> {
+class _MyHomePageState extends State<MyHomePage>  with GameMixin<MyHomePage>{
   int _counter = 0;
+  TCardController _cardsController = TCardController();
+
+  @override
+  void initState() {
+    super.initState();
+    onInit();
+  }
 
   void _incrementCounter() {
     setState(() {
@@ -95,13 +105,10 @@ class _MyHomePageState extends State<MyHomePage> {
           children: <Widget>[
             Flexible(
                 child: Container(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text("Is it Place", style: TextStyle(fontSize: 30)),
-                  Text("In country"),
-                ],
-              ),
+                  child: Headers(
+            title: "Is it Place",
+            subtitle: "In country"
+                  ),
             )),
             Flexible(
                 flex: 4,
@@ -109,30 +116,29 @@ class _MyHomePageState extends State<MyHomePage> {
                   child: Container(
                     child: Padding(
                       padding: const EdgeInsets.all(48.0),
-                      child: Card(
-                        elevation: 12,
-                        child: Container(
-                          width: 300,
-                          height: 300,
-                          child: Text("it is"),
+                      child: TCard(
+                        slideSpeed: 25,
+                        delaySlideFor: 60,
+                        cards: items
+                          .map((e) => CapitalCard(key: ValueKey(e), item: e))
+                          .toList(),
+                        onForward: (index, info) => onGuess(
+                          index,
+                          info.direction == SwipDirection.Right,
+                          items[current].fake != null,
                         ),
                       ),
                     ),
                   ),
                 )),
-            Flexible(
-                child: Container(
-              child: Center(
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    TextButton(onPressed: (){}, child: Text('False')),
-                    TextButton(onPressed: (){}, child: Text('True')),
-                  ],
+            Padding(
+              padding: EdgeInsets.all(12.0),
+              child: Controls(
+                onAnswer: (isTrue) => _cardsController.forward(
+                  direction: isTrue? SwipDirection.Right: SwipDirection.Left,
                 ),
               ),
-            )),
+            ),
             Text(
               'You have pushed the button this many times:',
             ),
@@ -150,4 +156,36 @@ class _MyHomePageState extends State<MyHomePage> {
       ), // This trailing comma makes auto-formatting nicer for build methods.
     );
   }
+}
+
+class Headers extends StatelessWidget {
+  final String? title;
+  final String? subtitle;
+
+  const Headers({
+    Key? key,
+    this.title,
+    this.subtitle,
+  }): super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    final title = this.title;
+    final subtitle = this.subtitle;
+    return Column(
+      children: [
+        if (title != null)
+          Text(
+            title,
+            style: Theme.of(context).textTheme.headline4,
+          ),
+        if (subtitle != null)
+          Text(
+            subtitle,
+            style: Theme.of(context).textTheme.bodyText2,
+          )
+      ],
+    );
+  }
+
 }
