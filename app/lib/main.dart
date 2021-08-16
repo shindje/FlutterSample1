@@ -93,6 +93,46 @@ class _MyHomePageState extends State<MyHomePage> {
           // horizontal).
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
+            Flexible(
+                child: Container(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text("Is it Place", style: TextStyle(fontSize: 30)),
+                  Text("In country"),
+                ],
+              ),
+            )),
+            Flexible(
+                flex: 4,
+                child: SizedBox.expand(
+                  child: Container(
+                    child: Padding(
+                      padding: const EdgeInsets.all(48.0),
+                      child: Card(
+                        elevation: 12,
+                        child: Container(
+                          width: 300,
+                          height: 300,
+                          child: Text("it is"),
+                        ),
+                      ),
+                    ),
+                  ),
+                )),
+            Flexible(
+                child: Container(
+              child: Center(
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    TextButton(onPressed: (){}, child: Text('False')),
+                    TextButton(onPressed: (){}, child: Text('True')),
+                  ],
+                ),
+              ),
+            )),
             Text(
               'You have pushed the button this many times:',
             ),
